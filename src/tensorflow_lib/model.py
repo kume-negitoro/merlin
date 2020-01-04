@@ -83,7 +83,7 @@ class TensorflowModels(object):
           with tf.name_scope("input"):
               input_layer=tf.placeholder(dtype=tf.float32,shape=(None,self.n_in),name="input_layer")
               if self.dropout_rate!=0.0:
-                 print "Using dropout to avoid overfitting and the dropout rate is",self.dropout_rate
+                 print("Using dropout to avoid overfitting and the dropout rate is",self.dropout_rate)
                  is_training_drop=tf.placeholder(dtype=tf.bool,shape=(),name="is_training_drop")
                  input_layer_drop=dropout(input_layer,self.dropout_rate,is_training=is_training_drop)
                  layer_list.append(input_layer_drop)
@@ -91,7 +91,7 @@ class TensorflowModels(object):
               else:
                  layer_list.append(input_layer)
           g.add_to_collection("input_layer",layer_list[0])
-          for i in xrange(len(self.hidden_layer_size)):
+          for i in range(len(self.hidden_layer_size)):
               with tf.name_scope("hidden_layer_"+str(i+1)):
                 if self.dropout_rate!=0.0:
                     last_layer=layer_list[-1]
@@ -132,7 +132,7 @@ class TensorflowModels(object):
           with tf.name_scope("input"):
                input_layer=tf.placeholder(dtype=tf.float32,shape=(None,None,self.n_in),name="input_layer")
                if self.dropout_rate!=0.0:
-                  print "Using dropout to avoid overfitting and the dropout rate is",self.dropout_rate
+                  print("Using dropout to avoid overfitting and the dropout rate is",self.dropout_rate)
                   is_training_drop=tf.placeholder(dtype=tf.bool,shape=(),name="is_training_drop")
                   input_layer_drop=dropout(input_layer,self.dropout_rate,is_training=is_training_drop)
                   layer_list.append(input_layer_drop)
@@ -146,7 +146,7 @@ class TensorflowModels(object):
                  is_training_batch=tf.placeholder(dtype=tf.bool,shape=(),name="is_training_batch")
                  bn_params={"is_training":is_training_batch,"decay":0.99,"updates_collections":None}
                  g.add_to_collection("is_training_batch",is_training_batch)
-             for i in xrange(len(self.hidden_layer_type)):
+             for i in range(len(self.hidden_layer_type)):
                  if self.dropout_rate!=0.0:
                      if self.hidden_layer_type[i]=="tanh":
                          new_layer=fully_connected(layer_list[-1],self.hidden_layer_size[i],activation_fn=tf.nn.tanh,normalizer_fn=batch_norm,normalizer_params=bn_params)
@@ -240,7 +240,7 @@ class Encoder_Decoder_Models(TensorflowModels):
       def encoder(self,inputs,inputs_sequence_length):
            with tf.variable_scope("encoder"):
                 basic_cell=[]
-                for i in xrange(len(self.hidden_layer_size)):
+                for i in range(len(self.hidden_layer_size)):
                     if self.hidden_layer_type[i]=="tanh":
                         basic_cell.append(tf.contrib.rnn.BasicRNNCell(num_units=self.encoder_layer_size[i]))
                     if self.hidden_layer_type[i]=="lstm":
@@ -263,7 +263,7 @@ class Encoder_Decoder_Models(TensorflowModels):
           """Memory is a tuple containing the forward and backward final states (output_states_fw,output_states_bw)"""
           with tf.variable_scope("decoder"):
               basic_cell=[]
-              for i in xrange(len(self.hidden_layer_size)):
+              for i in range(len(self.hidden_layer_size)):
                     if self.hidden_layer_type[i]=="tanh":
                         basic_cell.append(tf.contrib.rnn.BasicRNNCell(num_units=self.encoder_layer_size[i]))
                     if self.hidden_layer_type[i]=="lstm":
