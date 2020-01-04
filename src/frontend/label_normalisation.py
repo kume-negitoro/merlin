@@ -5,6 +5,7 @@ from multiprocessing import Pool
 from io_funcs.binary_io import BinaryIOCollection
 from .linguistic_base import LinguisticBase
 
+from scipy.stats import norm
 import matplotlib.mlab as mlab
 import math
 
@@ -675,9 +676,9 @@ class HTSLabelNormalisation(LabelNormalisation):
 
         sigma = 0.4
 
-        cc_features[0, :] = mlab.normpdf(x1, mu1, sigma)
-        cc_features[1, :] = mlab.normpdf(x2, mu2, sigma)
-        cc_features[2, :] = mlab.normpdf(x3, mu3, sigma)
+        cc_features[0, :] = norm.pdf(x1, mu1, sigma)
+        cc_features[1, :] = norm.pdf(x2, mu2, sigma)
+        cc_features[2, :] = norm.pdf(x3, mu3, sigma)
 
         return cc_features
 
@@ -717,9 +718,9 @@ class HTSLabelNormalisation(LabelNormalisation):
         sigma2 = sigma-1
         sigma3 = sigma
 
-        y1 = mlab.normpdf(x1, mu1, sigma1)
-        y2 = mlab.normpdf(x2, mu2, sigma2)
-        y3 = mlab.normpdf(x3, mu3, sigma3)
+        y1 = norm.pdf(x1, mu1, sigma1)
+        y2 = norm.pdf(x2, mu2, sigma2)
+        y3 = norm.pdf(x3, mu3, sigma3)
 
         for i in range(dur):
             cc_feat_matrix[i,0] = y1[(dur+1+i)*10]
