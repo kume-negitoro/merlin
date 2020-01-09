@@ -43,7 +43,7 @@ if [ ! -d ${demo_label} ]; then
     mkdir -p database/prompt-lab
     ls -1 database/labels/label_phone_align/* \
         | (xargs readlink -f) 2>/dev/null \
-        | head -n 500 \
+        | head -n 100 \
         | xargs -I % cp % database/prompt-lab
 fi
 
