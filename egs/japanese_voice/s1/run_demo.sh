@@ -6,38 +6,42 @@ run_tts=true
 logging_enabled=true
 voice_name="japanese_voice"
 demo_voice=jsut_ver1.1
+demo_voice_rename=${demo_voice}_data
 demo_voice_type=basic5000
 data_url=http://ss-takashi.sakura.ne.jp/corpus/jsut_ver1.1.zip
 
 demo_label=jsut-lab-0.1.0
+demo_label_rename=${demo_label}_data
 label_url=https://github.com/r9y9/jsut-lab/archive/v0.1.0.zip
 
 if [ "$logging_enabled" = true ]; then
     exec > >(tee ${voice_name}_$(date '+%Y%m%d_%H-%M-%S').log) 2>&1
 fi
 
-if [ ! -d ${demo_voice} ]; then
+if [ ! -d ${demo_voice_rename} ]; then
 
-    if [ ! -f ${demo_voice}.zip ]; then
+    if [ ! -f ${demo_voice_rename}.zip ]; then
         echo "downloading voice data......"
-        wget $data_url
+        wget $data_url -O ${demo_voice_rename}.zip
     fi
 
-    unzip ${demo_voice}.zip
+    unzip ${demo_voice_rename}.zip
+    mv ${demo_voice} ${demo_voice_rename}
     mkdir -p database/wav
-    cp ${demo_voice}/${demo_voice_type}/wav/* database/wav
+    cp ${demo_voice_rename}/${demo_voice_type}/wav/* database/wav
 fi
 
-if [ ! -d ${demo_label} ]; then
+if [ ! -d ${demo_label_rename} ]; then
 
-    if [ ! -f ${demo_label}.zip ]; then
+    if [ ! -f ${demo_label_rename}.zip ]; then
         echo "downloading label data......"
-        wget $label_url -O ${demo_label}.zip
+        wget $label_url -O ${demo_label_rename}.zip
     fi
 
-    unzip ${demo_label}.zip
+    unzip ${demo_label_rename}.zip
+    mv ${demo_label} ${demo_label_rename}
     mkdir -p database/labels/label_phone_align
-    cp ${demo_label}/${demo_voice_type}/lab/* database/labels/label_phone_align
+    cp ${demo_label_rename}/${demo_voice_type}/lab/* database/labels/label_phone_align
 
     rm -rf database/prompt-lab
     mkdir -p database/prompt-lab
