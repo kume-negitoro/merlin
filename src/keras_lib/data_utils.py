@@ -51,7 +51,7 @@ from io_funcs.binary_io import BinaryIOCollection
 ############################
 
 UTT_BUFFER_SIZE   =   10000
-FRAME_BUFFER_SIZE = 3000000
+FRAME_BUFFER_SIZE = 6000000
 
 
 def read_data_from_file_list(inp_file_list, out_file_list, inp_dim, out_dim, sequential_training=True):

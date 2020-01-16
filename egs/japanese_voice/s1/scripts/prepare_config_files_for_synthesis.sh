@@ -73,7 +73,7 @@ then
     $SED -i s#'hidden_layer_size\s*:.*'#'hidden_layer_size: [512, 512, 512, 512]'# $duration_config_file
     $SED -i s#'hidden_layer_type\s*:.*'#'hidden_layer_type: ['\''TANH'\'', '\''TANH'\'', '\''TANH'\'', '\''TANH'\'']'# $duration_config_file
 fi
-$SED -i s#'switch_to_tensorflow\s*:.*'#'switch_to_tensorflow: True'# $duration_config_file
+$SED -i s#'switch_to_keras\s*:.*'#'switch_to_keras: True'# $duration_config_file
 
 
 # [Data]
@@ -215,7 +215,7 @@ then
     $SED -i s#'hidden_layer_size\s*:.*'#'hidden_layer_size: [512, 512, 512, 512]'# $acoustic_config_file
     $SED -i s#'hidden_layer_type\s*:.*'#'hidden_layer_type: ['\''TANH'\'', '\''TANH'\'', '\''TANH'\'', '\''TANH'\'']'# $acoustic_config_file
 fi
-$SED -i s#'switch_to_tensorflow\s*:.*'#'switch_to_tensorflow: True'# $acoustic_config_file
+$SED -i s#'switch_to_keras\s*:.*'#'switch_to_keras: True'# $acoustic_config_file
 
 
 # [Data]
