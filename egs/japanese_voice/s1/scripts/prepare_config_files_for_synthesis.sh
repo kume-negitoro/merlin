@@ -74,6 +74,9 @@ then
     $SED -i s#'hidden_layer_type\s*:.*'#'hidden_layer_type: ['\''TANH'\'', '\''TANH'\'', '\''TANH'\'', '\''TANH'\'']'# $duration_config_file
 fi
 $SED -i s#'switch_to_keras\s*:.*'#'switch_to_keras: True'# $duration_config_file
+$SED -i s#'sequential_training\s*:.*'#'sequential_training: True'# $duration_config_file
+# $SED -i s#'warmup_epoch\s*:.*'#'warmup_epoch: 1'# $duration_config_file
+# $SED -i s#'training_epochs\s*:.*'#'training_epochs: 2'# $duration_config_file
 
 
 # [Data]
@@ -216,6 +219,9 @@ then
     $SED -i s#'hidden_layer_type\s*:.*'#'hidden_layer_type: ['\''TANH'\'', '\''TANH'\'', '\''TANH'\'', '\''TANH'\'']'# $acoustic_config_file
 fi
 $SED -i s#'switch_to_keras\s*:.*'#'switch_to_keras: True'# $acoustic_config_file
+$SED -i s#'sequential_training\s*:.*'#'sequential_training: True'# $acoustic_config_file
+# $SED -i s#'warmup_epoch\s*:.*'#'warmup_epoch: 1'# $acoustic_config_file
+# $SED -i s#'training_epochs\s*:.*'#'training_epochs: 2'# $acoustic_config_file
 
 
 # [Data]

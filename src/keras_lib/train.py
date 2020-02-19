@@ -46,6 +46,8 @@ from io_funcs.binary_io import BinaryIOCollection
 from keras_lib.model import kerasModels
 from keras_lib import data_utils
 
+from keras.callbacks import TensorBoard
+
 class TrainKerasModels(kerasModels):
 
     def __init__(self, n_in, hidden_layer_size, n_out, hidden_layer_type, output_type='linear', dropout_rate=0.0, loss_function='mse', optimizer='adam', rnn_params=None):
@@ -62,9 +64,57 @@ class TrainKerasModels(kerasModels):
         pass;
 
     def train_feedforward_model(self, train_x, train_y, valid_x, valid_y, batch_size=256, num_of_epochs=10, shuffle_data=True):
-        self.model.fit(train_x, train_y, batch_size=batch_size, epochs=num_of_epochs, shuffle=shuffle_data)
+        tensorboard = TensorBoard(
+            log_dir='./logs',
+            histogram_freq=0,
+            batch_size=batch_size,
+            write_graph=True,
+            write_grads=True,
+        )
+        self.model.fit(train_x, train_y, batch_size=batch_size, epochs=num_of_epochs, shuffle=shuffle_data, callbacks=[tensorboard])
+
+    def train_custom_model(self, train_x, train_y, valid_x, valid_y, train_flen, batch_size=1, num_of_epochs=10, shuffle_data=True, training_algo=1):
+        print('--- train_custom_model ---')
+        batch_size = 32
+        num_of_epochs = 25
+
+        tensorboard = TensorBoard(
+            log_dir='./logs',
+            histogram_freq=0,
+            batch_size=batch_size,
+            write_graph=True,
+            write_grads=True,
+        )
+        tensorboard.set_model(self.model)
+
+        train_id_list = list(train_flen['utt2framenum'].keys())
+        if shuffle_data:
+            random.seed(271638)
+            random.shuffle(train_id_list)
+
+        train_file_number = len(train_id_list)
+        for epoch_num in range(num_of_epochs):
+            print(('Epoch: %d/%d ' %(epoch_num+1, num_of_epochs)))
+            file_num = 0
+            while file_num < train_file_number:
+                train_idx_list = train_id_list[file_num: file_num + batch_size]
+                seq_len_arr    = [train_flen['utt2framenum'][filename] for filename in train_idx_list]
+                max_seq_length = max(seq_len_arr)
+                sub_train_x    = dict((filename, train_x[filename]) for filename in train_idx_list)
+                sub_train_y    = dict((filename, train_y[filename]) for filename in train_idx_list)
+                temp_train_x   = data_utils.transform_data_to_3d_matrix(sub_train_x, max_length=max_seq_length)
+                temp_train_y   = data_utils.transform_data_to_3d_matrix(sub_train_y, max_length=max_seq_length)
+                logs = self.model.train_on_batch(temp_train_x, temp_train_y)
+                file_num += len(train_idx_list)
+                data_utils.drawProgressBar(file_num, train_file_number)
+
+            tensorboard.on_epoch_end(epoch_num, dict(zip(self.model.metrics_names, logs)))
+            print(" Validation error: %.3f" % (self.get_validation_error(valid_x, valid_y)))
+
+        tensorboard.on_train_end(None)
 
     def train_sequence_model(self, train_x, train_y, valid_x, valid_y, train_flen, batch_size=1, num_of_epochs=10, shuffle_data=True, training_algo=1):
+        return self.train_custom_model(train_x, train_y, valid_x, valid_y, train_flen, batch_size, num_of_epochs, shuffle_data, training_algo)
         if batch_size == 1:
             self.train_recurrent_model_batchsize_one(train_x, train_y, valid_x, valid_y, num_of_epochs, shuffle_data)
         else:

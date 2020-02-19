@@ -108,7 +108,62 @@ class kerasModels(object):
         # Compile the model
         self.compile_model()
 
+    def define_custom_model(self):
+        print('--- define custom model ---')
+        print('--- debug n_in: ' + str(self.n_in))
+        print('--- debug n_out: ' + str(self.n_out))
+        
+        seed = 12345
+        np.random.seed(seed)
+
+        n_hidden = 512
+        use_dropout = False
+        dropout_rate1 = 0.2
+        dropout_rate2 = 0.5
+
+        # self.model.add(
+        #     Dense(
+        #         input_shape=(None, self.n_in),
+        #         units=n_hidden,
+        #         kernel_initializer="normal"))
+        # self.model.add(Dense(n_hidden))
+        # self.model.add(Dense(n_hidden))
+        # self.model.add(Dense(n_hidden))
+        # self.model.add(
+        #     Dense(
+        #         units=self.n_out,
+        #         input_dim=n_hidden,
+        #         kernel_initializer='normal',
+        #         activation='linear'))
+
+        self.model.add(
+            Dense(
+                input_shape=(None, self.n_in),
+                units=n_hidden,
+                kernel_initializer="normal"))
+        self.model.add(
+            Dropout(dropout_rate1) if use_dropout else Dense(n_hidden))
+        self.model.add(
+            LSTM(
+                units=n_hidden,
+                input_shape=(None, n_hidden),
+                kernel_initializer='glorot_uniform',
+                return_sequences=True))
+        self.model.add(
+            Dropout(dropout_rate2) if use_dropout else Dense(n_hidden))
+        self.model.add(
+            Dense(
+                units=self.n_out,
+                input_dim=n_hidden,
+                kernel_initializer='normal',
+                activation='linear'))
+
+        # Compile the model
+        self.compile_model()
+
     def define_sequence_model(self):
+        return self.define_custom_model()
+
         seed = 12345
         np.random.seed(seed)
 
